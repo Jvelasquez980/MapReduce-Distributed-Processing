@@ -5,7 +5,7 @@ SCRIPT_PY="total_gdp_by_department.py"
 INPUT_HDFS_PATH="hdfs:///user/hadoop/entrada/cleaned_gdp_data.csv"
 OUTPUT_HDFS_DIR="hdfs:///user/hadoop/salida"
 LOCAL_OUTPUT_FILE="resultados.csv"
-S3_BUCKET="pruebas-telematica"
+S3_BUCKET="proyectotelematica"
 S3_DEST_PATH="output/resultados.csv"
 
 hdfs dfs -rm -r -f $OUTPUT_HDFS_DIR

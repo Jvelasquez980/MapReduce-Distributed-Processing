@@ -3,7 +3,7 @@ import requests
 import json
 
 app = Flask(__name__)
-S3_URL = "https://pruebas-telematica.s3.amazonaws.com/output/resultados.csv"
+S3_URL = "https://proyectotelematica.s3.us-east-1.amazonaws.com/output/resultados.csv"
 
 @app.route("/api/resultados", methods=["GET"])
 def obtener_resultados():
