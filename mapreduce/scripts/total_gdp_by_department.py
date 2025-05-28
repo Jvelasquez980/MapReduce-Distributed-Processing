@@ -1,23 +1,32 @@
 #!/usr/bin/env python3
 from mrjob.job import MRJob
 import csv
-class MRTotalGDPByDepartment(MRJob):
+
+class MRStatsGDPByDepartment(MRJob):
 
     def mapper(self, _, line):
-        # Skip the header
-        if line.startswith("department"):
+        # Saltar encabezado
+        if line.startswith("year"):
             return
 
         try:
             year, department, value = next(csv.reader([line]))
             value = float(value)
             yield department, value
-        except:
-            pass  # skip malformed lines
+        except Exception:
+            pass  # omitir líneas malformadas
 
     def reducer(self, department, values):
-        yield department, round(sum(values), 2)
+        values = list(values)
+        total = sum(values)
+        promedio = total / len(values)
+        maximo = max(values)
+        yield department, {
+            "total": round(total, 2),
+            "promedio": round(promedio, 2),
+            "maximo": round(maximo, 2),
+            "conteo": len(values)
+        }
 
 if __name__ == '__main__':
-    MRTotalGDPByDepartment.run()
-
+    MRStatsGDPByDepartment.run()
