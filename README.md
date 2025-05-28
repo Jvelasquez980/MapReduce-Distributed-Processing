@@ -63,6 +63,7 @@ In cluster logs search the bucket that you already create, and put the logs fold
 ![image](https://github.com/user-attachments/assets/94948547-478d-4f43-88da-28e8df8cb9da)
 
 In Security configuration and EC2 key pair, select a create and select a key pair. In the last part, Identity and Access Management (IAM) roles select all default roles
+
 ![image](https://github.com/user-attachments/assets/f669cd6e-fda5-4fcd-861f-f54e900ebfa5)
 
 Create the cluster and wait for 10 or 15 minutes. When the cluster
