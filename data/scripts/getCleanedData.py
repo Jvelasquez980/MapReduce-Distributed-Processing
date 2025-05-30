@@ -10,11 +10,11 @@ df = pd.DataFrame.from_records(results)
 print(df.columns)
 
 # Keep only relevant columns
-df_cleaned = df[['a_o', 'departamento', 'valor_miles_de_millones_de']].copy()
+df_cleaned = df[['a_o', 'departamento', 'valor_miles_de_millones_de','tipo_de_precios']].copy()
 
 
 # Rename for clarity
-df_cleaned.columns = ['year', 'department', 'value']
+df_cleaned.columns = ['year', 'department', 'value', 'price_type']
 
 # Convert types
 df_cleaned['year'] = pd.to_numeric(df_cleaned['year'], errors='coerce')

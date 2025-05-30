@@ -10,18 +10,19 @@ class MRStatsGDPByDepartment(MRJob):
             return
 
         try:
-            year, department, value = next(csv.reader([line]))
+            year, department, value, price_type = next(csv.reader([line]))
             value = float(value)
-            yield department, value
+            key = (department, price_type)
+            yield key, value
         except Exception:
             pass  # omitir líneas malformadas
 
-    def reducer(self, department, values):
+    def reducer(self, key, values):
         values = list(values)
         total = sum(values)
         promedio = total / len(values)
         maximo = max(values)
-        yield department, {
+        yield key, {
             "total": round(total, 2),
             "promedio": round(promedio, 2),
             "maximo": round(maximo, 2),
