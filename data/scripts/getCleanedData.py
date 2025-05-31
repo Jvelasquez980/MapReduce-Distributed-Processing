@@ -22,6 +22,6 @@ df_cleaned['value'] = pd.to_numeric(df_cleaned['value'], errors='coerce')
 
 # Drop rows with NaNs
 df_cleaned = df_cleaned.dropna()
-
+df_cleaned = df_cleaned[df_cleaned['price_type'].str.lower().str.contains('constante')]
 # Save for MRJob
 df_cleaned.to_csv("data\data\cleaned_gdp_data.csv", index=False)
