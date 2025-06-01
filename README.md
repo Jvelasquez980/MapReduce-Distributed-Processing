@@ -119,7 +119,6 @@ Upload the files in hdfs and run the MapReduce with mapreduce/scripts/correr_map
 #!/bin/bash
 
 # --- CONFIGURACIÓN ---
-# USE YOUR OWN BUCKET
 S3_BUCKET="proyectotelematica"
 SCRIPT_KEY="scripts/total_gdp_by_department.py"
 SCRIPT_PY="total_gdp_by_department.py"
@@ -129,29 +128,21 @@ OUTPUT_HDFS_DIR="hdfs:///user/hadoop/salida"
 LOCAL_OUTPUT_FILE="resultados.csv"
 S3_DEST_PATH="output/resultados.csv"
 
-# 1. Descargar el script desde S3 (si aplica)
-
-if aws s3 cp s3://$S3_BUCKET/$SCRIPT_KEY $SCRIPT_PY; then
-
-else
-
+# Descargar el script desde S3
+if ! aws s3 cp s3://$S3_BUCKET/$SCRIPT_KEY $SCRIPT_PY; then
     exit 1
 fi
 
-# 2. Eliminar salida previa de HDFS (si existe)
-
+# Eliminar salida anterior en HDFS
 hdfs dfs -rm -r -f $OUTPUT_HDFS_DIR
 
-# 3. Ejecutar el script MapReduce
-
+# Ejecutar MapReduce
 python3 $SCRIPT_PY -r hadoop $INPUT_HDFS_PATH --output-dir $OUTPUT_HDFS_DIR
 
-# 4. Unificar resultados y extraerlos de HDFS
-
+# Unificar resultados
 hdfs dfs -getmerge $OUTPUT_HDFS_DIR $LOCAL_OUTPUT_FILE
 
-# 5. Subir resultado final a S3
-
+# Subir resultado final a S3
 aws s3 cp $LOCAL_OUTPUT_FILE s3://$S3_BUCKET/$S3_DEST_PATH
 
 

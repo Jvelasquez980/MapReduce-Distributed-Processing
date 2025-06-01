@@ -16,19 +16,22 @@ def obtener_resultados():
         for linea in contenido.strip().split("\n"):
             try:
                 clave, valor_json = linea.strip().split("\t")
-                departamento = clave.replace('"', '').strip().encode("utf-8").decode("unicode_escape")
+                year, departamento = eval(clave)  # clave es una tupla en string
+                departamento = departamento.replace('"', '').strip().encode("utf-8").decode("unicode_escape")
                 datos = json.loads(valor_json)
                 resultados.append({
+                    "año": year,
                     "departamento": departamento,
-                    "total": datos["total"],
-                    "promedio": datos["promedio"],
-                    "maximo": datos["maximo"],
-                    "conteo": datos["conteo"]
+                    "pib_total": datos.get("PIB total"),
+                    "promedio_actividad": datos.get("Promedio de PIB"),
+                    "maximo_actividad": datos.get("Actividad con maximo PIB"),
+                    "total_actividades": datos.get("Datos totales"),
+                    "actividades": datos.get("PIB de las actividades", [])
                 })
             except Exception as e:
                 print(f"⚠️ Error en línea: {linea} → {e}")
 
-        # Filtro si se proporciona query param
+        # Filtro por departamento (opcional)
         filtro = request.args.get("departamento")
         if filtro:
             resultados = [r for r in resultados if r["departamento"].lower() == filtro.lower()]
@@ -40,7 +43,7 @@ def obtener_resultados():
 
 @app.route("/")
 def index():
-    return "✅ API funcionando con filtro por departamento"
+    return "✅ API funcionando con filtro por departamento y resultados extendidos"
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=5000)

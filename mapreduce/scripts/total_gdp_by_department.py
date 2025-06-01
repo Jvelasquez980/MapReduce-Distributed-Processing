@@ -1,30 +1,48 @@
 #!/usr/bin/env python3
 from mrjob.job import MRJob
 import csv
+from collections import defaultdict
 
 class MRStatsGDPByDepartment(MRJob):
 
     def mapper(self, _, line):
-        # Saltar encabezado
         if line.startswith("year"):
             return
 
         try:
-            year, department, value, price_type = next(csv.reader([line]))
+            year, department, value, activity = next(csv.reader([line]))
             value = float(value)
             key = (year, department)
-            yield key, value
+            yield key, (value, activity)
         except Exception:
-            pass  # omitir líneas malformadas
+            pass
 
     def reducer(self, key, values):
-        values = list(values)
-        total = sum(values)
-        promedio = total / len(values)
-        maximo = max(values)
+        total = 0
+        count = 0
+        max_value = float('-inf')
+        max_activity = ""
+        actividad_gdp = defaultdict(float)
+
+        for value, activity in values:
+            total += value
+            count += 1
+            actividad_gdp[activity] += value
+            if value > max_value:
+                max_value = value
+                max_activity = activity
+
+        promedio = total / count if count else 0
+
         yield key, {
-            "total": round(total, 2),
-            "promedio por sector": round(promedio, 2),
+            "PIB total": round(total, 2),
+            "Promedio de PIB": round(promedio, 2),
+            "Actividad con maximo PIB": {
+                "actividad": max_activity,
+                "valor": round(max_value, 2)
+            },
+            "Datos totales": count,
+            "PIB de las actividades": {act: round(gdp, 2) for act, gdp in actividad_gdp.items()}
         }
 
 if __name__ == '__main__':

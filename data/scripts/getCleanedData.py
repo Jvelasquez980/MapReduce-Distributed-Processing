@@ -10,11 +10,11 @@ df = pd.DataFrame.from_records(results)
 print(df.columns)
 
 # Keep only relevant columns
-df_cleaned = df[['a_o', 'departamento', 'valor_miles_de_millones_de','tipo_de_precios']].copy()
+df_cleaned = df[['a_o', 'departamento', 'valor_miles_de_millones_de','tipo_de_precios', 'actividad']].copy()
 
 
 # Rename for clarity
-df_cleaned.columns = ['year', 'department', 'value', 'price_type']
+df_cleaned.columns = ['year', 'department', 'value', 'price_type', 'activity']
 
 # Convert types
 df_cleaned['year'] = pd.to_numeric(df_cleaned['year'], errors='coerce')
@@ -23,5 +23,7 @@ df_cleaned['value'] = pd.to_numeric(df_cleaned['value'], errors='coerce')
 # Drop rows with NaNs
 df_cleaned = df_cleaned.dropna()
 df_cleaned = df_cleaned[df_cleaned['price_type'].str.lower().str.contains('constante')]
+df_cleaned = df_cleaned.drop(columns=['price_type'])
+# Reset index
 # Save for MRJob
 df_cleaned.to_csv("data\data\cleaned_gdp_data.csv", index=False)
