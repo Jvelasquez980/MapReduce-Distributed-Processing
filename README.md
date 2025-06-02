@@ -8,6 +8,13 @@
 - [@Jeronimo Velasquez](https://github.com/Jvelasquez980)
 - [@Marcelo Castro](https://github.com/Eloven24)
 
+## Data Documentation
+
+[Data Documentation](https://github.com/Jvelasquez980/MapReduce-Distributed-Processing/wiki/Data-documentation)
+
+## Features Docs
+
+[Features Documentation](https://github.com/Jvelasquez980/MapReduce-Distributed-Processing/wiki/Features)
 
 ## Run Locally
 
@@ -30,18 +37,20 @@ Install requirements
 # You must use python 3.11, mrjob doesnt work well with a different python version
   pip install -r requirements.txt
 ```
-
-
-Run this command
-
-```bash
-  python .\mapreduce\scripts\total_gdp_by_department.py .\data\data\cleaned_gdp_data.csv > .\mapreduce\results\output.txt 
+Get the data
+```python
+python.exe .\data\scripts\getData.py
 ```
 
 
-## Data Documentation
+Run the map reduce
 
-[Documentation](https://linktodocumentation)
+```bash
+  python .\mapreduce\scripts\total_gdp_by_department.py .\data\data\cleaned_gdp_data.csv > .\mapreduce\results\output.csv
+```
+You can visualize the map reduce result in mapreduce\results\output.csv
+
+
 
 
 ## Deployment
@@ -183,3 +192,30 @@ cd API
 docker-compose up -d
 ```
 You should see since the ip of the EC2 instace the same as you saw locally.
+
+Also as an extra we made a web application to have a better visualization of the data. As the api, you can decide if you want to make it public (In a AWS EC2 instance) or you can run ut locally. If you decided to run it locally download the requirements in web_visualizer/requirements.txt with 
+```bash
+pip install -r web_visualizer/requirements.txt
+```
+After this you can change the port of execution to one different of 5000, this because the api use the same port and if you run it both locally you will have some problems. At the end. To visualize it change this from web_visualizer/visual_app.py
+
+```python
+app = Flask(__name__)
+DATA_URL = "http://174.129.242.86:5000/api/resultados" #After
+DATA_URL = "http://localhost:5000/api/resultados" #Before
+#Use the ip of the instance that you made and the port where you were running the api
+```
+Run the aplication and you will see the final result
+![image](https://github.com/user-attachments/assets/46cb8141-88bc-48dd-88b0-e8edfde5eb47)
+
+If you decide to made a EC2 instance just upload the folder web_visualizer in the instance an run 
+```bash
+sudo apt update
+sudo apt install -y docker.io docker-compose
+sudo systemctl enable docker
+sudo usermod -aG docker $USER
+cd web_visualizer/
+sudo docker-compose up -d
+```
+This will launch the application in docker container, and will be running in the port 5000 so make sure that you activate this port in the security groups
+
