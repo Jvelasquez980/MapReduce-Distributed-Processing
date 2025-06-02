@@ -1,0 +1,9 @@
+version: "3.9"
+
+services:
+  visual_app:
+    build: .
+    container_name: visual_app_container
+    ports:
+      - "5000:5000"
+    restart: always 

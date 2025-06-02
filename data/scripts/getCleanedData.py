@@ -23,6 +23,7 @@ df_cleaned['value'] = pd.to_numeric(df_cleaned['value'], errors='coerce')
 # Drop rows with NaNs
 df_cleaned = df_cleaned.dropna()
 df_cleaned = df_cleaned[df_cleaned['price_type'].str.lower().str.contains('constante')]
+df_cleaned = df_cleaned[~df_cleaned['department'].str.lower().str.contains('bogot')]
 df_cleaned = df_cleaned.drop(columns=['price_type'])
 # Reset index
 # Save for MRJob
