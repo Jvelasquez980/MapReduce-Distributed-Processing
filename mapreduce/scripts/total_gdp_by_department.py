@@ -7,15 +7,21 @@ class MRStatsGDPByDepartment(MRJob):
 
     def mapper(self, _, line):
         if line.startswith("year"):
-            return
+            return  
 
         try:
-            year, department, value, activity = next(csv.reader([line]))
-            value = float(value)
+            year, activity, sector, tipo_precio, codigo, department, value = next(csv.reader([line]))
+            value = float(value)    
+
+            if tipo_precio.strip().lower() != "pib a precios constantes de 2015": #We take only GDP at constant prices
+                return  
+            if "bogot" in department.lower(): # We exclude Bogotá
+                return
             key = (year, department)
             yield key, (value, activity)
         except Exception:
             pass
+
 
     def reducer(self, key, values):
         total = 0
